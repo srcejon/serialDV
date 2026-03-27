@@ -30,7 +30,9 @@
 
 #include <sys/ioctl.h>
 #include <sys/stat.h>
+#ifndef __FreeBSD__
 #include <linux/serial.h>
+#endif
 #include <cerrno>
 #include <fcntl.h>
 #include <unistd.h>
@@ -326,6 +328,7 @@ bool SerialDataController::open(const std::string& device, SERIAL_SPEED speed)
         return false;
     }
 
+#ifndef __FreeBSD__
     // This is an attempt to fix a bug introduced in the FTDI driver in kernel 4.4.52
     // However this works only if you execute as root
     // You will have to stick to an older kernel until a fix is found or run as root
@@ -347,6 +350,7 @@ bool SerialDataController::open(const std::string& device, SERIAL_SPEED speed)
         fprintf(stderr, "SerialDataController::open: ioctl: Cannot set ASYNC_LOW_LATENCY\n");
         return false;
     }
+#endif
 
     // Set "terminal" characteristics
 
